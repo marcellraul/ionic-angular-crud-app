@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SongService } from './../shared/song.service';
 
 @Component({
   selector: 'app-home',
@@ -6,7 +7,26 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  Songs: any = [];
+  constructor(
+    private songService: SongService
+  ) {}
 
-  constructor() {}
+  ionViewDidEnter() {
+    this.songService.getSongList().subscribe((res) => {
+      console.log(res)
+      this.Songs = res;
+    })
+  }
 
+  deleteSong(song, i) {
+    if (window.confirm('Do you want to delete user?')) {
+      this.songService.deleteSong(song._id)
+        .subscribe(() => {
+          this.Songs.splice(i, 1);
+          console.log('Song deleted!')
+        }
+        )
+    }
+  }
 }
